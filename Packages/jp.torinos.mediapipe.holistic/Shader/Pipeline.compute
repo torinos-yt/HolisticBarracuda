@@ -153,9 +153,15 @@ void pose_crop_kernel(uint2 id : SV_DispatchThreadID)
 //
 // Kernel 4: Hand region bounding box update
 //
+#define KEYPOINT_COUNT 21
 
 StructuredBuffer<float4> _filtered_point;
 RWStructuredBuffer<Region> _hand_bbox_region;
+
+StructuredBuffer<float4> _left_hand_input;
+StructuredBuffer<float4> _right_hand_input;
+
+StructuredBuffer<float4> _filtered_hand_input;
 
 float _handscale;
 
@@ -165,15 +171,32 @@ void hand_bbox_kernel(uint id : SV_DispatchThreadID)
     uint entry_count = _bbox_count.Load(0);
     if (entry_count == 0) return;
 
+    float score;
+    if(!id) score = _left_hand_input[0].x;
+    else    score = _right_hand_input[0].x;
+
+    float2 center, wrinkle;
+
     // Input from the pose detection model
-    float2 center = _filtered_point[19 + id].xy * _handscale + .5;
-    float2 wrinkle = _filtered_point[15 + id].xy * _handscale + .5;
+    if(score > .65)
+    {
+        center = _filtered_hand_input[9 + KEYPOINT_COUNT * id].xy;
+        wrinkle = _filtered_hand_input[0 + KEYPOINT_COUNT * id].xy;
+
+        center = center * _handscale + .5;
+        wrinkle = wrinkle * _handscale + .5;
+    }
+    else
+    {
+        center = _filtered_point[19 + id].xy * _handscale + .5;
+        wrinkle = _filtered_point[15 + id].xy * _handscale + .5;
+    }
 
     const float2 up = center - wrinkle;
-    float angle = -(atan2(up.y, up.x) - PI / 2);
+    float angle = (atan2(up.y, up.x) - PI / 2);
 
     // Hand region size (squarified and enlarged bounding box)
-    float size = length(up) * 3. * (_filtered_point[19 + id].z*256 + 1);
+    float size = length(up) * 3.;
 
     // Hand region structure. We're going to update this.
     Region region = _hand_bbox_region[id];
@@ -233,7 +256,7 @@ void hand_crop_kernel(uint2 id : SV_DispatchThreadID)
     // Tensor element output
     uint offs = (id.y * HAND_CROP_IMAGE_SIZE + id.x) * 3;
 
-    if(handside)
+    if(!handside)
     {
         _lefthand_crop_output[offs + 0] = rgb.r;
         _lefthand_crop_output[offs + 1] = rgb.g;

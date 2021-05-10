@@ -54,13 +54,16 @@ partial class HolisticPipeline
         cs_poseprocess.Dispatch(0, 1, 1, 1);
 
         // Hand region bounding box update
+        cs_pipeline.SetFloat("_handscale", 1 / scale.y);
         cs_pipeline.SetBuffer(3, "_bbox_count", _detector.pose.CountBuffer);
         cs_pipeline.SetBuffer(3, "_filtered_point", _buffer.filter);
+        cs_pipeline.SetBuffer(3, "_left_hand_input", _detector.lefthand.OutputBuffer);
+        cs_pipeline.SetBuffer(3, "_right_hand_input", _detector.righthand.OutputBuffer);
+        cs_pipeline.SetBuffer(3, "_filtered_hand_input", _buffer.handfilter);
         cs_pipeline.SetBuffer(3, "_hand_bbox_region", _buffer.handRegion);
         cs_pipeline.Dispatch(3, 1, 1, 1);
 
         // Hand region cropping
-        cs_pipeline.SetFloat("_handscale", 1 / scale.y);
         cs_pipeline.SetTexture(4, "_hand_crop_input", input);
         cs_pipeline.SetBuffer(4, "_hand_crop_region", _buffer.handRegion);
         cs_pipeline.SetBuffer(4, "_lefthand_crop_output", _buffer.lefthandcrop);

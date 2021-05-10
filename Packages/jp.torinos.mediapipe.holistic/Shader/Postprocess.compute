@@ -68,7 +68,7 @@ void post_hand_kernel(uint id : SV_DispatchThreadID)
     Region handRegion = _post_hand_region[side];
 
     float3 x;
-    if(side)
+    if(!side)
         x = _post_left_hand_input[idx + 1].xyz;
     else
         x = _post_right_hand_input[idx + 1].xyz;
