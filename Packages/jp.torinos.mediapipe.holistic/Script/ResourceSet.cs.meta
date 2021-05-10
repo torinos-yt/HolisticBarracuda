@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 80c05419ab687814a9dc749c23e2828d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - pose_resource: {instanceID: 0}
+  - landmark_resource: {instanceID: 0}
+  - hand_resource: {instanceID: 0}
+  - face_resource: {instanceID: 0}
+  - pipeline: {instanceID: 0}
+  - postprocess: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

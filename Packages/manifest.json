@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "com.unity.ide.vscode": "1.2.3",
+    "com.unity.ugui": "1.0.0",
+    "com.unity.modules.jsonserialize": "1.0.0",
+    "com.unity.modules.ui": "1.0.0",
+    "com.unity.modules.video": "1.0.0"
+  },
+  "scopedRegistries": [
+    {
+      "name": "Keijiro",
+      "url": "https://registry.npmjs.com",
+      "scopes": [
+        "jp.keijiro"
+      ]
+    },
+    {
+      "name": "torinos",
+      "url": "https://registry.npmjs.com",
+      "scopes": [
+        "jp.torinos"
+      ]
+    }
+  ]
+}
